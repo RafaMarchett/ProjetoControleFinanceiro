@@ -7,6 +7,8 @@
 
 #include "UsuarioPadrao.hpp"
 int main(){
+    srand(time(0));
+
     string arquivoSalvamento = "0";
     // cout << "Insira o nome do arquivo para salvemento COM COMPLEMENTO (.dat,.txt...)\n>>> ";
     cout << "Insira o nome do arquivo para salvamento SEM COMPLEMENTO\n>>> ";

@@ -10,13 +10,12 @@
 #include "UsuarioPadrao.hpp"
 
 //==================================================================
-//--- Funções-Membro ---
+//--- Funcões-Membro ---
 
-UsuarioPadrao::UsuarioPadrao(string nomeSalvamento) : _nomeSalvamento(nomeSalvamento) // : simboloMoeda("R$"), senha("0"), numeroCrip(0), orcamentoMaximo(100000000), gastoDoMes(0), saldo(0) , salario(0), _nomeSalvamento(nomeSalvamento)
+UsuarioPadrao::UsuarioPadrao(string nomeSalvamento) : _nomeSalvamento(nomeSalvamento),simboloMoeda("R$"), senha("0"), numeroCrip(0), orcamentoMaximo(999999999999999), gastoDoMes(0), saldo(0) , salario(0)
 {
     cout <<  nomeSalvamento << endl;
     iniciarSistema();
-   
 }
 
 
@@ -34,9 +33,8 @@ void UsuarioPadrao::salvarDados()
     }
 
     // Salvar data members
-    setNumeroCrip((getNumeroCrip() * 67));
     criptografarValor(orcamentoMaximo); criptografarValor(gastoDoMes); criptografarValor(gastoMensal); criptografarValor(saldo); criptografarValor(salario); 
-    ArqParaSalvar.write(reinterpret_cast<char*>(&numeroCrip), sizeof(numeroCrip));           //Dar isso em todas as variaveis, com o tamanho da própria variável
+    ArqParaSalvar.write(reinterpret_cast<char*>(&numeroCrip), sizeof(numeroCrip));           //Dar isso em todas as variaveis, com o tamanho da própria variavel
     ArqParaSalvar.write(reinterpret_cast<char*>(&orcamentoMaximo), sizeof(orcamentoMaximo)); //MENOS PARA STRINGS
     ArqParaSalvar.write(reinterpret_cast<char*>(&gastoDoMes), sizeof(gastoDoMes));           //Pasa o primeiro elemento como referência
     ArqParaSalvar.write(reinterpret_cast<char*>(&gastoMensal), sizeof(gastoMensal));
@@ -45,7 +43,7 @@ void UsuarioPadrao::salvarDados()
 
     // Save strings
     criptografarValor(nome);
-    size_t size = nome.size(); //Pega o tamanho de nome. Em um sistema 32 bits,é um u_int, em um de 64 é um u_long long
+    size_t size = nome.size(); //Pega o tamanho de nome. Em um sistema 32 bits,e um u_int, em um de 64 e um u_long long
     ArqParaSalvar.write(reinterpret_cast<char*>(&size), sizeof(size)); //Escreve o próprio tamanho
     ArqParaSalvar.write(nome.c_str(), size);   //.c_str para um ponteiro char para o inicio na string, depois passa size. Salva a string sem '\0'
 
@@ -96,10 +94,10 @@ void UsuarioPadrao::salvarDados()
         size_t tamanhoString = ite->first.size();
         ArqParaSalvar.write(reinterpret_cast<char*>(&tamanhoString),sizeof(tamanhoString));
         
-        // Salva o conteúdo da string
+        // Salva o conteudo da string
         ArqParaSalvar.write(ite->first.c_str(), tamanhoString);
 
-        // Salva o conteúdo do double
+        // Salva o conteudo do double
         ArqParaSalvar.write(reinterpret_cast<char*> (&ite->second), sizeof(ite->second));
     }
 
@@ -114,10 +112,10 @@ void UsuarioPadrao::salvarDados()
         size_t tamanhoString = ite->first.size();
         ArqParaSalvar.write(reinterpret_cast<char*>(&tamanhoString),sizeof(tamanhoString));
         
-        // Salva o conteúdo da string
+        // Salva o conteudo da string
         ArqParaSalvar.write(ite->first.c_str(), tamanhoString);
         
-        // Salva o conteúdo do double
+        // Salva o conteudo do double
         ArqParaSalvar.write(reinterpret_cast<char*> (&ite->second), sizeof(ite->second));
     }
 
@@ -130,12 +128,12 @@ void UsuarioPadrao::criarArquivo()
 {
     std::ifstream ArquivoTeste(_nomeSalvamento, std::ios::binary);
     if (ArquivoTeste) {
-        cerr << boldVermelho << "Já existem dados salvos nesse arquivo!" << noBold << endl;
+        cerr << boldVermelho << "Ja existem dados salvos nesse arquivo!" << noBold << endl;
         exit(0); // Sai do programa sem sobrescrever o arquivo
     }
     ArquivoTeste.close();
 
-    // Agora, crie o arquivo porque sabemos que ele não existe
+    // Agora, crie o arquivo porque sabemos que ele nao existe
     std::ofstream ArquivoCriar(_nomeSalvamento, std::ios::out | std::ios::binary);
     if (!ArquivoCriar) {
         cerr << boldVermelho << "Erro ao criar o arquivo!" << noBold << endl;
@@ -153,7 +151,6 @@ void UsuarioPadrao::carregarDados()
     // Carrega os membros de dados
     
     CarregarAqr.read(reinterpret_cast<char*>(&numeroCrip), sizeof(numeroCrip)); //Bem parecido com os anteriores, mas dessa vez com read
-    // setNumeroCrip((getNumeroCrip() * 67));
     CarregarAqr.read(reinterpret_cast<char*>(&orcamentoMaximo), sizeof(orcamentoMaximo));
     CarregarAqr.read(reinterpret_cast<char*>(&gastoDoMes), sizeof(gastoDoMes));
     CarregarAqr.read(reinterpret_cast<char*>(&gastoMensal), sizeof(gastoMensal));
@@ -163,9 +160,9 @@ void UsuarioPadrao::carregarDados()
     // Load strings
 
     size_t size; //Pra strings, fica como um sizeoff(size)
-    CarregarAqr.read(reinterpret_cast<char*>(&size), sizeof(size)); // O conteúdo de size vai ser substituido com o conteuudo do arquivo
+    CarregarAqr.read(reinterpret_cast<char*>(&size), sizeof(size)); // O conteudo de size vai ser substituido com o conteuudo do arquivo
     nome.resize(size);  //A linha tem size caracteres
-    CarregarAqr.read(&nome[0], size); //Ponteiro para o inicio da string, faz isso até o fim dela (size)
+    CarregarAqr.read(&nome[0], size); //Ponteiro para o inicio da string, faz isso ate o fim dela (size)
 
     CarregarAqr.read(reinterpret_cast<char*>(&size), sizeof(size));
     simboloMoeda.resize(size);
@@ -209,7 +206,7 @@ void UsuarioPadrao::carregarDados()
 
     // load map<string,double>
     tamanho;
-    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o número de pares
+    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o numero de pares
 
     despesasDoMes.clear(); // Limpa qualquer lixo de despesasDoMes
 
@@ -234,7 +231,7 @@ void UsuarioPadrao::carregarDados()
 
     // load map<string,double> 2
     tamanho;
-    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o número de pares
+    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o numero de pares
 
     despesasMensais.clear(); // Limpa qualquer lixo de despesasMensais
 
@@ -283,11 +280,11 @@ void UsuarioPadrao::inserirSenha()
               x = 1;
         }//end if
             else if (tentativas < 3)
-              cout << boldVermelho << "A senha inserida está incorreta, você ainda tem " << (3 - tentativas) << " tentativas" << noBold << endl;
+              cout << boldVermelho << "A senha inserida esta incorreta, você ainda tem " << (3 - tentativas) << " tentativas" << noBold << endl;
         }//end if
 
         else{
-            cerr << boldVermelho  << "Sistema encerrado: 3 Erros consecutivos na inserção da senha" << noBold << endl;
+            cerr << boldVermelho  << "Sistema encerrado: 3 Erros consecutivos na insercao da senha" << noBold << endl;
             exit(0);
         }
         
@@ -411,7 +408,7 @@ void UsuarioPadrao::dadosIniciais()
 
     while (getSenha().size() < 8)
     {
-        cout << "Insira a sua senha (mais de 8 dígitos): \n>>> ";
+        cout << "Insira a sua senha (mais de 8 digitos): \n>>> ";
         inputIgnore(val);
         if (val.size() < 8)
             cout << boldVermelho << "Insira uma senha com pelo menos 8 caracteres" << noBold << endl;
@@ -419,7 +416,7 @@ void UsuarioPadrao::dadosIniciais()
         criptografarSenha();
     }
 
-    cout << "Insira o símbolo da sua moeda (EX: R$)\n>>> ";
+    cout << "Insira o simbolo da sua moeda (EX: R$)\n>>> ";
     inputIgnore(val);
     setSimboloMoeda(val);
 
@@ -438,7 +435,7 @@ void UsuarioPadrao::dadosIniciais()
         definirSalario();
     } // end if
 
-    cout << bold << "Gostaria de definir um orçamento máximo mensal?(S/N)\n>>> " << noBold;
+    cout << bold << "Gostaria de definir um orcamento maximo mensal?(S/N)\n>>> " << noBold;
     inputIgnore(opt);
 
     if (opt == 's' || opt == 'S')
@@ -463,7 +460,7 @@ void UsuarioPadrao::menus()
     char opt = '/';
     bool encerrar = 0;
     
-    do
+    do 
     {
         opt = '/';
         cout << boldBranco << "\n\n### GERENCIADOR FINANCEIRO ###\n"
@@ -472,13 +469,13 @@ void UsuarioPadrao::menus()
              << "1. Registrar despesas por categorias\n"
              << "2. Exibir gasto total por categoria\n"
              << "3. Adicionar saldo\n"
-             << "4. Gerar um orçamento máximo mensal\n"
+             << "4. Gerar um orcamento maximo mensal\n"
              << "5. Simular investimentos\n"   
              << "6. Gerar relatórios de investimentos\n"   
              << "7. Exibir dados da conta *\n"   
              << "8. Alterar dados da conta **\n"
              << "9. Encerrar o programa\n\n"
-             << "* Nome, Simbolo de moeda, Orçamento Maximo, Despesas Totais\n  Saldo Restante, Salario Mensal\n"
+             << "* Nome, Simbolo de moeda, Orcamento Maximo, Despesas Totais\n  Saldo Restante, Salario Mensal\n"
              << "** Nome, Simbolo de Moeda, Salario Mensal, Senha\n"
              << ">>> ";
         inputIgnore(opt);
@@ -523,7 +520,7 @@ void UsuarioPadrao::menus()
         case '\t':
             break;
         default:
-            cout << "Opção inválida" << endl;
+            cout << "Opcao invalida" << endl;
             break;
         }
     } while (encerrar == 0);
@@ -533,7 +530,7 @@ void UsuarioPadrao::menus()
 void UsuarioPadrao::passarMes()
 {
     setSaldo((getSaldo()+getSalario()));
-    cout << "\nSeu saldo após o salário: " << (getSaldo() < 0 ? boldVermelho : boldVerde) << getSimboloMoeda() << ' ' << getSaldo() << endl << noBold;
+    cout << "\nSeu saldo após o salario: " << (getSaldo() < 0 ? boldVermelho : boldVerde) << getSimboloMoeda() << ' ' << getSaldo() << endl << noBold;
     setGastoDoMes(0);
     despesasDoMes.clear();
     mp::iterator ite;
@@ -550,7 +547,7 @@ void UsuarioPadrao::passarMes()
 
     if(getSaldo() < 0)
     {
-        cout << boldVermelho << "AVISO: SEUS GASTOS MENSAIS TE DEIXARAM COM DINHEIRO NEGATIVO, ADICIONE SALDO OU PAGARÁ JUROS MENSAIS!" << endl;
+        cout << boldVermelho << "AVISO: SEUS GASTOS MENSAIS TE DEIXARAM COM DINHEIRO NEGATIVO, ADICIONE SALDO OU PAGARA JUROS MENSAIS!" << endl;
         setSaldo((getSaldo() + (getSaldo()/100)));
         cout << "Você perdeu " << (getSaldo()/100) << " em juros por estar com dinheiro negativo na conta!" << endl;
     }
@@ -565,7 +562,7 @@ void UsuarioPadrao::regDespesas()
     string inputTipo;
     double inputValor;
     char opt;
-    cout << "Essa despeza será mensal (S/N)?\n>>> ";
+    cout << "Essa despeza sera mensal (S/N)?\n>>> ";
     inputIgnore(opt);
     if(opt == 's'||opt == 'S'){
         cout << "Insira o tipo de despeza mensal, ou \"N/A\" para cancelar" << endl
@@ -590,7 +587,7 @@ void UsuarioPadrao::regDespesas()
         if (despesasMensais.find(inputTipo) != despesasMensais.end() && inputValor && (getGastoMensal() + inputValor <= getOrcamentoMaximo() && (getSaldo() - inputValor) >= 0))
         {
             despesasMensais[inputTipo] += inputValor;
-            cout << boldVerde << "Valor da despesa " << inputTipo << " agora é " << fixed << setprecision(2) << ' ' << getSimboloMoeda() << despesasMensais[inputTipo] << noBold << endl;
+            cout << boldVerde << "Valor da despesa " << inputTipo << " agora e " << fixed << setprecision(2) << ' ' << getSimboloMoeda() << despesasMensais[inputTipo] << noBold << endl;
             setGastoDoMes((getGastoMensal() + inputValor));
             setSaldo((getSaldo() - inputValor)); 
         } // end if
@@ -602,7 +599,7 @@ void UsuarioPadrao::regDespesas()
             setSaldo((getSaldo() - inputValor));
         } // end else
         else if ((getSaldo() - inputValor) >= 0)
-            cout << boldVermelho << "O seu gasto mensal ultapassou o limite do orçamento. Aumente seu orçamento máximo mensal ou espere até o próximo mes" << noBold << endl;
+            cout << boldVermelho << "O seu gasto mensal ultapassou o limite do orcamento. Aumente seu orcamento maximo mensal ou espere ate o próximo mes" << noBold << endl;
         else
             cout << boldVermelho << "Você ficou sem saldo para realizar esse gasto" << noBold << endl;
     }//if mensal
@@ -624,7 +621,7 @@ void UsuarioPadrao::regDespesas()
         if (despesasDoMes.find(inputTipo) != despesasDoMes.end() && inputValor && (getGastoDoMes() + inputValor <= getOrcamentoMaximo() && (getSaldo() - inputValor) >= 0))
         {
             despesasDoMes[inputTipo] += inputValor;
-            cout << boldVerde << "Valor da despesa " << inputTipo << " agora é " << fixed << setprecision(2) << ' ' << getSimboloMoeda() << despesasDoMes[inputTipo] << noBold << endl;
+            cout << boldVerde << "Valor da despesa " << inputTipo << " agora e " << fixed << setprecision(2) << ' ' << getSimboloMoeda() << despesasDoMes[inputTipo] << noBold << endl;
             setGastoDoMes((getGastoDoMes() + inputValor));
             setSaldo((getSaldo() - inputValor));
         } // end if
@@ -636,7 +633,7 @@ void UsuarioPadrao::regDespesas()
             setSaldo((getSaldo() - inputValor));
         } // end else
         else if ((getSaldo() - inputValor) >= 0)
-            cout << boldVermelho << "O seu gasto mensal ultapassou o limite do orçamento. Aumente seu orçamento máximo mensal ou espere até o próximo mes" << noBold << endl;
+            cout << boldVermelho << "O seu gasto mensal ultapassou o limite do orcamento. Aumente seu orcamento maximo mensal ou espere ate o próximo mes" << noBold << endl;
         else
             cout << boldVermelho << "Você ficou sem saldo para realizar esse gasto" << noBold << endl;
     }//else naoMensal
@@ -668,15 +665,15 @@ void UsuarioPadrao::gerarOrcamentoMaximo()
 {
     double val, temp = getOrcamentoMaximo();
     setOrcamentoMaximo(0);
-    cout << "Insira o orçamento máximo desejado em " << getSimboloMoeda() << " \n>>> ";
+    cout << "Insira o orcamento maximo desejado em " << getSimboloMoeda() << " \n>>> ";
     inputIgnore(val);
 
     if((val >= getGastoDoMes())){
         setOrcamentoMaximo(val);
-        cout << boldVerde << "O seu orçamento máximo agora é de: " << getSimboloMoeda() << ' ' << getOrcamentoMaximo() << endl << noBold;
+        cout << boldVerde << "O seu orcamento maximo agora e de: " << getSimboloMoeda() << ' ' << getOrcamentoMaximo() << endl << noBold;
     }//end if
     else{
-        cout << boldVermelho << "O seu orçamento já estrapolou os gastos" << noBold << endl;
+        cout << boldVermelho << "O seu orcamento ja estrapolou os gastos" << noBold << endl;
         setOrcamentoMaximo(temp);
     }//end else
 }//end gerarOrcamentoMaximo
@@ -684,11 +681,11 @@ void UsuarioPadrao::gerarOrcamentoMaximo()
 void UsuarioPadrao::adicionarSaldo()
 {
     double input;
-    cout << "Insira quanto saldo será inserido em " << getSimboloMoeda() << " \n>>> ";
+    cout << "Insira quanto saldo sera inserido em " << getSimboloMoeda() << " \n>>> ";
     inputIgnore(input);
     setSaldo((getSaldo()+input));
 
-    cout << boldVerde << "Seu saldo agora é de " << getSimboloMoeda() << ' ' << getSaldo()  << noBold;
+    cout << boldVerde << "Seu saldo agora e de " << getSimboloMoeda() << ' ' << getSaldo()  << noBold;
 }//end adicionarSaldo
 
 void UsuarioPadrao::exibirMaisValores()
@@ -697,8 +694,11 @@ void UsuarioPadrao::exibirMaisValores()
     cout << boldBranco << "\n\n### VALORES DA CONTA ###" << noBold << endl;
     cout << "Nome: " << getNome() << '\n'
          << "Simbolo de moeda preferido: " << boldBranco << getSimboloMoeda()     << '\n' << noBold
-         << "Orçamento máximo:   "         << boldBranco  << getOrcamentoMaximo() << '\n' << noBold
-         << "Despesas desse mes: "         << boldBranco  << getGastoDoMes()      << '\n' << noBold
+         << "Orcamento maximo:   "     << boldBranco;
+    if(getOrcamentoMaximo() != 999999999999999) { cout << getOrcamentoMaximo() << '\n' << noBold; }
+    else { cout << "NAO DEFINIDO AINDA" << '\n' << noBold; }
+    
+    cout << "Despesas desse mes: "         << boldBranco  << getGastoDoMes()      << '\n' << noBold
          << "Despesas mensais:   "         << boldBranco  << getGastoMensal()     << '\n' << noBold
          << "Saldo restante:     "         << boldBranco  << getSaldo()           << '\n' << noBold
          << "Salario mensal:     "         << boldBranco  << getSalario()         << endl << noBold;
@@ -737,7 +737,7 @@ void UsuarioPadrao::alterarOutrosValores()
 
         case '2':
         {
-            cout << "Insira o novo símbolo de moeda preferido da conta\n>>> ";
+            cout << "Insira o novo simbolo de moeda preferido da conta\n>>> ";
             inputIgnore(inputString);
             setSimboloMoeda(inputString);
             break;
@@ -754,7 +754,7 @@ void UsuarioPadrao::alterarOutrosValores()
             inputString = "0";
             while (inputString.size() < 8)
             {
-                cout << "Insira a sua nova senha (mais de 8 dígitos): \n>>> ";
+                cout << "Insira a sua nova senha (mais de 8 digitos): \n>>> ";
                 inputIgnore(inputString);
                 if (inputString.size() < 8)
                     cout << boldVermelho << "Insira uma senha com pelo menos 8 caracteres" << noBold << endl;
@@ -771,7 +771,7 @@ void UsuarioPadrao::alterarOutrosValores()
         case '\t':
             break;
         default:
-            cout << "Opção inválida" << endl;
+            cout << "Opcao invalida" << endl;
             break;
         }
 
@@ -789,7 +789,7 @@ void UsuarioPadrao::simularInvestimentos()
   
         opt = '0';
         cout << "\n1. Simular investimento de renda fixa\n"
-             << "2. Simular investimento de renda variável\n"
+             << "2. Simular investimento de renda variavel\n"
              << "3. Sair\n>>> ";
 
         inputIgnore(opt);
@@ -805,7 +805,7 @@ void UsuarioPadrao::simularInvestimentos()
             inputIgnore(valorInvestido);
             cout << boldBranco << "Agora, insira o valor mensal investido em " << getSimboloMoeda() << " \n>>> " << noBold;
             inputIgnore(valorMensal);
-            cout << boldBranco << "Por último, insira o período em meses\n>>> " << noBold;
+            cout << boldBranco << "Por ultimo, insira o periodo em meses\n>>> " << noBold;
             inputIgnore(periodo);
             
             vector<double> vetorParaGrafico;       //Isso vai ser usado no salvemento
@@ -813,7 +813,7 @@ void UsuarioPadrao::simularInvestimentos()
             valorFinal = calcularJuroscompostosFixo(valorInvestido,taxa,periodo,valorMensal,vetorParaGrafico);
             printarGraficoInvestimentos(vetorParaGrafico,periodo);
 
-            cout << boldVerde << "O valor final é de : " << getSimboloMoeda() << ' ' << valorFinal << noBold << endl;
+            cout << boldVerde << "O valor final e de : " << getSimboloMoeda() << ' ' << valorFinal << noBold << endl;
             todasSimulacoes.push_back(vetorParaGrafico);
 
             cout << "\n\n"; int i = 1;
@@ -826,9 +826,9 @@ void UsuarioPadrao::simularInvestimentos()
             cout << setfill('-') << setw(104) << "_"; cout << setfill(' ');
             cout << "\n\n";
             cout << "Pressione \"Enter\" para continuar\n>>> ";
-            cin.ignore('\n');
+            cin.ignore(1000,'\n');
 
-            cout << "\nGostaria de fazer uma nova simulação?(S/N)\n>>> ";
+            cout << "\nGostaria de fazer uma nova simulacao?(S/N)\n>>> ";
             inputIgnore(opt);
 
             if(opt == 's'||opt == 'S') simularInvestimentos();
@@ -841,7 +841,7 @@ void UsuarioPadrao::simularInvestimentos()
             inputIgnore(valorInvestido);
             cout << boldBranco << "Agora, insira o valor mensal investido em " << getSimboloMoeda() << " \n>>> " << noBold;
             inputIgnore(valorMensal);
-            cout << boldBranco << "Por último, insira o período em meses\n>>> " << noBold;
+            cout << boldBranco << "Por ultimo, insira o periodo em meses\n>>> " << noBold;
             inputIgnore(periodo);
 
             vector<double> vetorParaGrafico;
@@ -856,7 +856,7 @@ void UsuarioPadrao::simularInvestimentos()
                 cout << '\n';
             #endif
             
-            cout << boldVerde << "O valor final é de : " << getSimboloMoeda() << ' ' << valorFinal << noBold << endl;
+            cout << boldVerde << "O valor final e de : " << getSimboloMoeda() << ' ' << valorFinal << noBold << endl;
 
             cout << "\n\n"; int i = 1;
             cout << setfill('_') << setw(104) << "_\n"; cout << setfill(' ');
@@ -868,9 +868,9 @@ void UsuarioPadrao::simularInvestimentos()
             cout << setfill('-') << setw(104) << "_"; cout << setfill(' ');
             cout << "\n\n";
             cout << "Pressione \"Enter\" para continuar\n>>> ";
-            cin.ignore('\n');
+            cin.ignore(1000,'\n');
 
-            cout << "\nGostaria de fazer uma nova simulação?(S/N)\n>>> ";
+            cout << "\nGostaria de fazer uma nova simulacao?(S/N)\n>>> ";
             inputIgnore(opt);
 
             if(opt == 's'||opt == 'S') simularInvestimentos();
@@ -884,7 +884,7 @@ void UsuarioPadrao::simularInvestimentos()
         break;
 
         default:
-            cout << "Opção Inválida" << endl;
+            cout << "Opcao Invalida" << endl;
             break;
         } // end switch
 
@@ -903,7 +903,7 @@ void UsuarioPadrao::definirSalario()
     cout << "Insira um valor para o seu salario mensal em " << getSimboloMoeda() << " \n>>> ";
     inputIgnore(input);
     setSalario(input);
-    cout << "O seu salário agora é de: "  << getSimboloMoeda() << ' ' << getSalario() << endl;
+    cout << "O seu salario agora e de: "  << getSimboloMoeda() << ' ' << getSalario() << endl;
 
 }//end definirSalario
 double UsuarioPadrao::calcularJuroscompostosFixo(double valor, double taxa, int meses, double valorMensal, vector<double>& vetorParaGrafico)
@@ -920,7 +920,6 @@ double UsuarioPadrao::calcularJuroscompostosFixo(double valor, double taxa, int 
 
 double UsuarioPadrao::calcularJuroscompostosVariavel(double valor, double taxa, int meses, double valorMensal, vector<double>& vetorParaGrafico)
 {
-    srand48(time(0));
     int valorAleatorio = rand() % 100 + 1;
     double temp = valor;
     if (meses == 0)
@@ -961,13 +960,13 @@ void UsuarioPadrao::printarGraficoInvestimentos(const vector<double>& investment
     int contadorDiminuicao = 0;
     char opt = '/';
     int maxBarsSave = maxBars;
-    cout << "\n\n" << boldBranco << setfill('#') << setw(50) << " Gráfico " << setw(50) << ' ' << setfill(' ') << noBold
-         << "\nLinhas representam os meses e colunas a evolução patrimonial\n";
+    cout << "\n\n" << boldBranco << setfill('#') << setw(50) << " Grafico " << setw(50) << ' ' << setfill(' ') << noBold
+         << "\nLinhas representam os meses e colunas a evolucao patrimonial\n";
 
-    //Faz uma diminuição controlada no tamanho das linhas, caso o usuário quiser
+    //Faz uma diminuicao controlada no tamanho das linhas, caso o usuario quiser
     if((investmentValues.size()) >= 70){
         while(opt != '1' && opt != '0'){
-            cout << "AVISO: Gráfico com muitas linhas" << boldBranco << ". Digite 0 para fazer uma diminuição controlada, ou 1 para continuar\n>>> " << noBold;
+            cout << "AVISO: Grafico com muitas linhas" << boldBranco << ". Digite 0 para fazer uma diminuicao controlada, ou 1 para continuar\n>>> " << noBold;
             cin >> opt;
             cin.ignore(10000,'\n');
 
@@ -977,17 +976,17 @@ void UsuarioPadrao::printarGraficoInvestimentos(const vector<double>& investment
         {
             (maxBars % 2 == 0 ? maxBars /= 2 : ((maxBars+=1) /=2) );
             contadorDiminuicao++;
-        }//end while diminuição
+        }//end while diminuicao
 
     }//end if
-    else {cout << "Aperte enter para continuar e exibir o gráfico\n>>> "; cin.ignore(1000,'\n');}
+    else {cout << "Aperte enter para continuar e exibir o grafico\n>>> "; cin.ignore(1000,'\n');}
     cout << "\n\n" << bold;
-    double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Número máximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
+    double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Numero maximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
                                                                                            //ISSO DEIXA AS BARRAS PROPORCIONAIS
 
-    // Para cada "linha" do gráfico
+    // Para cada "linha" do grafico
     for (int i = maxBars; i > 0; --i) {
-        cout << right << setw(4) << i << " | "; // Exibe a linha com o número
+        cout << right << setw(4) << i << " | "; // Exibe a linha com o numero
         for (size_t j = 0; j < investmentValues.size(); j++) {
             int numBars = static_cast<int>((investmentValues[j] / maxInvestment) * maxBars); // Calcula a quantidade de barras
             if (numBars >= i) {
@@ -995,19 +994,19 @@ void UsuarioPadrao::printarGraficoInvestimentos(const vector<double>& investment
             } else {
                 cout << ' ';
             }
-            cout << ' '; // Espaço entre as barras
+            cout << ' '; // Espaco entre as barras
         }
         cout << endl;
     }
 
-    // Exibe a linha com os números das colunas
+    // Exibe a linha com os numeros das colunas
     cout << '\t';
     for (size_t j = 0; j < investmentValues.size(); ++j) {
         cout << "- ";
     }
     cout << "\n\n";
 
-    if(contadorDiminuicao != 0) cout << noBold << "Cada linha no gráfico representam aproximadamente " << (contadorDiminuicao*2) << " meses" << endl;
+    if(contadorDiminuicao != 0) cout << noBold << "Cada linha no grafico representam aproximadamente " << (contadorDiminuicao*2) << " meses" << endl;
 
 
     vector<int> complementoParaGrafico; //Isso vai ser usado no salvamento
@@ -1028,13 +1027,13 @@ void UsuarioPadrao::printarGraficoGuardado()
         int contadorDiminuicao = 0;
         char opt = '/';
         int maxBarsSave = maxBars;
-        cout << "\n\n" << boldBranco << setfill('#') << setw(50) << " Gráfico " << setw(50) << ' ' << setfill(' ') << noBold
-            << "\nLinhas representam os meses e colunas a evolução patrimonial\n";
+        cout << "\n\n" << boldBranco << setfill('#') << setw(50) << " Grafico " << setw(50) << ' ' << setfill(' ') << noBold
+            << "\nLinhas representam os meses e colunas a evolucao patrimonial\n";
 
-        //Faz uma diminuição controlada no tamanho das linhas, caso o usuário quiser
+        //Faz uma diminuicao controlada no tamanho das linhas, caso o usuario quiser
         if((investmentValues.size()) >= 70){
             while(opt != '1' && opt != '0' && opt != '2'){
-                cout << "AVISO: Gráfico com muitas linhas" << boldBranco << ". Digite 0 para fazer uma diminuição controlada, ou 1 para continuar. OU PRESSIONE 2 PARA SAIR\n>>> " << noBold;
+                cout << "AVISO: Grafico com muitas linhas" << boldBranco << ". Digite 0 para fazer uma diminuicao controlada, ou 1 para continuar. OU PRESSIONE 2 PARA SAIR\n>>> " << noBold;
                 cin >> opt;
                 cin.ignore(10000,'\n');
             }//end while opt
@@ -1044,17 +1043,17 @@ void UsuarioPadrao::printarGraficoGuardado()
             {
                 (maxBars % 2 == 0 ? maxBars /= 2 : ((maxBars+=1) /=2) );
                 contadorDiminuicao++;
-            }//end while diminuição
+            }//end while diminuicao
 
         }//end if
-        else {cout << "Aperte enter para continuar e exibir o gráfico\n>>> "; cin.ignore(1000,'\n');}
+        else {cout << "Aperte enter para continuar e exibir o grafico\n>>> "; cin.ignore(1000,'\n');}
         cout << "\n\n" << bold;
-        double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Número máximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
+        double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Numero maximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
                                                                                             //ISSO DEIXA AS BARRAS PROPORCIONAIS
 
-        // Para cada "linha" do gráfico
+        // Para cada "linha" do grafico
         for (int i = maxBars; i > 0; --i) {
-            cout << setw(2) << i << " | "; // Exibe a linha com o número
+            cout << setw(2) << i << " | "; // Exibe a linha com o numero
             for (size_t j = 0; j < investmentValues.size(); j++) {
                 int numBars = static_cast<int>((investmentValues[j] / maxInvestment) * maxBars); // Calcula a quantidade de barras
                 if (numBars >= i) {
@@ -1062,19 +1061,19 @@ void UsuarioPadrao::printarGraficoGuardado()
                 } else {
                     cout << ' ';
                 }
-                cout << ' '; // Espaço entre as barras
+                cout << ' '; // Espaco entre as barras
             }
             cout << endl;
         }
 
-        // Exibe a linha com os números das colunas
+        // Exibe a linha com os numeros das colunas
         cout << '\t';
         for (size_t j = 0; j < investmentValues.size(); ++j) {
             cout << "- ";
         }
         cout << "\n\n";
 
-        if(contadorDiminuicao != 0) cout << noBold << "Cada linha no gráfico representam aproximadamente " << (contadorDiminuicao*2) << " meses" << endl;
+        if(contadorDiminuicao != 0) cout << noBold << "Cada linha no grafico representam aproximadamente " << (contadorDiminuicao*2) << " meses" << endl;
 
         cout << "\n\n"; int i = 1;
         cout << setfill('_') << setw(104) << "_\n"; cout << setfill(' ');
@@ -1086,7 +1085,7 @@ void UsuarioPadrao::printarGraficoGuardado()
         cout << setfill('-') << setw(104) << "_"; cout << setfill(' ');
         cout << "\n\n";
         cout << "Pressione \"Enter\" para continuar\n>>> ";
-        cin.ignore('\n');
+        cin.ignore(1000,'\n');
         contador++;
     }
 
