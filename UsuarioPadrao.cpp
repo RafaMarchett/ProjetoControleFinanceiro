@@ -204,36 +204,32 @@ void UsuarioPadrao::carregarDados()
        CarregarAqr.read(reinterpret_cast<char*>(vetorInterno.data()), tamanhoInterno * sizeof(int));
     }
 
-    // load map<string,double>
     tamanho;
     CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o numero de pares
 
     despesasDoMes.clear(); // Limpa qualquer lixo de despesasDoMes
 
     for (size_t i = 0; i < tamanho; i++) {
-        // Ler o tamanho da string
+
         size_t tamanhoString;
         CarregarAqr.read(reinterpret_cast<char*>(&tamanhoString), sizeof(tamanhoString));
 
-        // Ler a string
         string chave;
         chave.resize(tamanhoString); //resize em chave para ter o tamanho da string
         CarregarAqr.read(&chave[0], tamanhoString); //Le de 0 ao final da string
 
-        // Ler o valor associado (double)
         double valor;
         CarregarAqr.read(reinterpret_cast<char*>(&valor), sizeof(valor));
 
-        // Inserir no map
+
         despesasDoMes[chave] = valor;
 
     }
 
-    // load map<string,double> 2
     tamanho;
-    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho)); // Ler o numero de pares
+    CarregarAqr.read(reinterpret_cast<char*>(&tamanho), sizeof(tamanho));
 
-    despesasMensais.clear(); // Limpa qualquer lixo de despesasMensais
+    despesasMensais.clear();
 
     for (size_t i = 0; i < tamanho; i++) {
         // Ler o tamanho da string
@@ -690,7 +686,6 @@ void UsuarioPadrao::adicionarSaldo()
 
 void UsuarioPadrao::exibirMaisValores()
 {
-    // inserirSenha();
     cout << boldBranco << "\n\n### VALORES DA CONTA ###" << noBold << endl;
     cout << "Nome: " << getNome() << '\n'
          << "Simbolo de moeda preferido: " << boldBranco << getSimboloMoeda()     << '\n' << noBold
@@ -831,7 +826,7 @@ void UsuarioPadrao::simularInvestimentos()
             cout << "\nGostaria de fazer uma nova simulacao?(S/N)\n>>> ";
             inputIgnore(opt);
 
-            if(opt == 's'||opt == 'S') simularInvestimentos();
+            if(opt == 's'||opt == 'S') { simularInvestimentos(); }
             break;
         } // end case: '1'
 
@@ -873,7 +868,7 @@ void UsuarioPadrao::simularInvestimentos()
             cout << "\nGostaria de fazer uma nova simulacao?(S/N)\n>>> ";
             inputIgnore(opt);
 
-            if(opt == 's'||opt == 'S') simularInvestimentos();
+            if(opt == 's'||opt == 'S') { simularInvestimentos(); }
             break;
         } // end case: '2'
             
@@ -984,11 +979,10 @@ void UsuarioPadrao::printarGraficoInvestimentos(const vector<double>& investment
     double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Numero maximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
                                                                                            //ISSO DEIXA AS BARRAS PROPORCIONAIS
 
-    // Para cada "linha" do grafico
     for (int i = maxBars; i > 0; --i) {
-        cout << right << setw(4) << i << " | "; // Exibe a linha com o numero
+        cout << right << setw(4) << i << " | "; 
         for (size_t j = 0; j < investmentValues.size(); j++) {
-            int numBars = static_cast<int>((investmentValues[j] / maxInvestment) * maxBars); // Calcula a quantidade de barras
+            int numBars = static_cast<int>((investmentValues[j] / maxInvestment) * maxBars);
             if (numBars >= i) {
                 cout << '#';
             } else {
@@ -999,7 +993,6 @@ void UsuarioPadrao::printarGraficoInvestimentos(const vector<double>& investment
         cout << endl;
     }
 
-    // Exibe a linha com os numeros das colunas
     cout << '\t';
     for (size_t j = 0; j < investmentValues.size(); ++j) {
         cout << "- ";
@@ -1051,7 +1044,6 @@ void UsuarioPadrao::printarGraficoGuardado()
         double maxInvestment = *max_element(investmentValues.begin(), investmentValues.end()); // Numero maximo de barras que podemos mostrar (*max_elements pega o maior valor do intervalo, desreferenciado)
                                                                                             //ISSO DEIXA AS BARRAS PROPORCIONAIS
 
-        // Para cada "linha" do grafico
         for (int i = maxBars; i > 0; --i) {
             cout << setw(2) << i << " | "; // Exibe a linha com o numero
             for (size_t j = 0; j < investmentValues.size(); j++) {
@@ -1143,7 +1135,6 @@ string UsuarioPadrao::getSenha() const
 void UsuarioPadrao::setSenha(string val)
 {
     senha = val;
-    // criptografarSenha();
 }
 
 long UsuarioPadrao::getNumeroCrip() const
